@@ -176,6 +176,18 @@ sudo apt remove fzf
 
 ---
 
+## 💬 Feedback
+
+If you have feedback, ideas, or run into any issues, feel free to open an [issue](https://github.com/nakkiy/ctxhist/issues/1)!
+
+- Share your impressions or thoughts
+- Report bugs or unexpected behavior
+- Suggest new features or improvements
+
+English or Japanese — either is welcome!
+
+---
+
 ## 🧩 Future Plans
 
 - Possibly release as a Zsh plugin (Oh-My-Zsh compatible)
