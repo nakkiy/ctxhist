@@ -1,7 +1,7 @@
 # `ctxhist`
 
-> **過去のコマンドを、“その場所・その状況”で完璧に再現**  
-> 文脈を記憶する Bash 履歴拡張ツール
+> **過去のコマンドを、その場所で再現**  
+> 実行したディレクトリを記憶する **履歴拡張ツール**
 
 ---
 
@@ -9,27 +9,28 @@
 
 `ctxhist` は、ただの履歴ではなく  
 **「いつ・どこで・何をしたか」** を記録し、  
-その文脈ごと再利用できる **文脈付き履歴機能** です。
+過去に実行した場所で再度実行できる **履歴拡張ツール** です。  
+
+⚠️ `fzf`に依存しています。  
+fzf はインタラクティブな検索ツールです（補完・履歴検索に便利）  
+ctxhist ではこれを使って過去の履歴を選択できます。
 
 ---
 
-## 🔥 デモでわかる：cd はもう履歴に要らない
+## 🔥 デモ
+**過去** に **あの場所** で打った**コマンド**をもう一度。
 
-📽️ *以下のGIFをご覧ください*
-
-![demo.gif](demo.gif)
+![demo.gif](./demo.gif)
 
 この例では…
 
-1. 現在 `/tmp` にいます  
-1. `Ctrl-g Ctrl-a` を押して、fzf から過去の `docker compose up` を選択  
-1. 自動で `cd ~/project-b && docker compose up` が入力されます  
-1. 実行するとその場所で実行が始まり、**そのままそこに滞在**できます！
-
-ctxhist は、コマンドを「どこで実行したか」も記録しているので、  
-実行したいコマンドを選ぶだけで、その場所に移動して実行してくれます。
-
-`restore` モード（`Ctrl-g Ctrl-r`）を使えば、`cur=$PWD; cd ~/project-b && docker compose up; cd "$cur"`となり実行後に元の場所に戻ることも可能です。
+1. `/home/demo/work/project1` にいます  
+1. `Ctrl-g Ctrl-r` を押して、fzf から過去の `project2`で実行した`cargo run` を選択  
+1. 自動で `cur=$PWD; cd /home/demo/work/project2 && cargo run; cd "$cur"` が入力されます  
+1. 実行するとその場所で実行し、元の場所に戻ります
+1. `Ctrl-g Ctrl-a` を押して、fzf から過去の `project2`で実行した`cargo run` を選択  
+1. 自動で `cd /home/demo/work/project2 && cargo run` が入力されます  
+1. 実行するとその場所で実行し、その場所に留まります。
 
 ---
 
@@ -40,7 +41,7 @@ ctxhist は、コマンドを「どこで実行したか」も記録している
 | コマンド検索             | ✅（fzfと併用で可能）            | ✅（fzf連携）                  |
 | 実行ディレクトリの記録   | ❌                            | ✅（毎回ログに記録）            |
 | 自動ディレクトリ移動     | ❌                            | ✅（stay/restoreで切替）       |
-| 重複除去 + 行数制限管理  | ❌                            | ✅                             |
+| 重複除去 + 行数制限管理  | ❌ （設定による）             | ✅                             |
 
 ---
 
@@ -67,9 +68,19 @@ ctxhist は、コマンドを「どこで実行したか」も記録している
 
 ---
 
+## ⌨️ モードについて
+#### モード比較
+
+| モード     | 説明                             | 例                                      |
+|------------|----------------------------------|------------------------------------------|
+| `stay`     | 実行後、そのディレクトリに滞在   | `cd ~/proj && docker up` → proj に残る   |
+| `restore`  | 実行後、元のディレクトリに戻る   | `cur=$PWD; cd ~/proj && docker up; cd "$cur"`   |
+
+---
+
 ## 📂 履歴ログの構造
 
-保存先：`$CTXHIST_LOG_FILE`（デフォルト：`~/.ctxhist_log`）
+保存先：`$CTXHIST_LOG_FILE`（デフォルト：`~/.config/.ctxhist.log`）
 
 ```
 YYYY-MM-DD HH:MM:SS | /path/to/dir | command here
@@ -82,17 +93,16 @@ YYYY-MM-DD HH:MM:SS | /path/to/dir | command here
 ### 1. `fzf` をインストール
 
 ```bash
-brew install fzf      # macOS
-sudo apt install fzf  # Ubuntu/Debian
+sudo apt install fzf
 ```
 
 ### 2. スクリプト配置 & `.bashrc` に追加
 
 ```bash
-git clone --depth 1 https://github.com/nakkiy/ctxhist ~/.ctxhist
+git clone --depth 1 https://github.com/nakkiy/ctxhist.git ~/.ctxhist
 ```
 
-`.bashrc` に追記：
+`.bashrc` に追記
 
 ```bash
 export CTXHIST_LOG_FILE="$HOME/.config/ctxhist.log"
@@ -113,11 +123,52 @@ source ~/.bashrc
 
 ---
 
+## ⚙️ アンインストール手順
+
+### 1. `.ctxhist.log` 削除
+
+```bash
+rm  ~/.ctxhist.log
+```
+
+### 2. スクリプト削除 & `.bashrc` 編集
+
+```bash
+rm -r ~/.ctxhist
+```
+
+インストール時に`.bashrc` に追記した内容を削除
+
+```bash
+export CTXHIST_LOG_FILE="$HOME/.config/ctxhist.log"
+export CTXHIST_MAX_LINES=10000
+export HISTX_EXCLUDE_CMDS="cd clear ls"
+export CTXHIST_BINDKEY_STAY='\C-g\C-a'
+export CTXHIST_BINDKEY_RESTORE='\C-g\C-r'
+export CTXHIST_BINDKEY_SUBDIR_STAY='\C-o\C-a'
+export CTXHIST_BINDKEY_SUBDIR_RESTORE='\C-o\C-r'
+
+source ~/.ctxhist/ctxhist.bash
+```
+
+```bash
+# 設定反映
+source ~/.bashrc
+```
+
+### 3. `fzf` アンインストール(任意)
+
+```bash
+sudo apt remove fzf
+```
+
+---
+
 ## ⚙️ 設定可能な環境変数
 
 | 変数名                    | 説明                           | デフォルト値              |
 |---------------------------|--------------------------------|----------------------------|
-| `CTXHIST_LOG_FILE`          | 履歴ログファイルの保存先        | `~/.ctxhist_log`            |
+| `CTXHIST_LOG_FILE`          | 履歴ログファイルの保存先        | `~/.ctxhist.log`            |
 | `CTXHIST_MAX_LINES`         | ログの最大行数                 | `10000`                   |
 | `CTXHIST_EXCLUDE_CMDS`      | 除外コマンド（空白区切り）      | 例: `"ls cd"`             |
 | `CTXHIST_BINDKEY_*`         | キーバインド設定               | `\C-g\C-a` など           |
@@ -132,4 +183,4 @@ source ~/.bashrc
 
 ## 📄 ライセンス
 
-MIT License
+[MIT License](LICENSE-MIT)
