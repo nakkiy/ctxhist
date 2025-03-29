@@ -87,6 +87,14 @@ YYYY-MM-DD HH:MM:SS | /path/to/dir | command here
 
 ---
 
+## 🐚 Shell Support
+Currently, `ctxhist` is designed for **Bash only**.  
+`Zsh` is **not yet supported**, but we plan to add compatibility in the future.
+
+If you're using Zsh, the keybindings and sourcing script may not work as expected.
+
+---
+
 ## ⚙️ Installation
 
 ### 1. Install `fzf`
