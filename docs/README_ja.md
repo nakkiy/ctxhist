@@ -89,22 +89,22 @@ YYYY-MM-DD HH:MM:SS | /path/to/dir | command here
 ---
 
 ## 🐚 対応シェルについて
-現在、`ctxhist` は **Bash 専用** です。  
-**Zsh** には**まだ対応していません** が、今後対応を検討しています。  
+現在、`ctxhist` は **`Bash`**、**`Zsh`** に対応しています。  
   
-**Zsh** をお使いの場合、キーバインドやスクリプトの読み込みが正しく**動作しない**可能性があります。
-
 ---
 
 ## ⚙️ インストール手順
 
-### 1. `fzf` をインストール
+### **`bash`** の場合
+
+#### 1. `fzf` をインストール
 
 ```bash
-sudo apt install fzf
+sudo apt install fzf    # on ubuntu, debian
+brew install fzf        # on macOS
 ```
 
-### 2. スクリプト配置 & `.bashrc` に追加
+#### 2. スクリプト配置 & `.bashrc` に追加
 
 ```bash
 git clone --depth 1 https://github.com/nakkiy/ctxhist.git ~/.ctxhist
@@ -113,15 +113,15 @@ git clone --depth 1 https://github.com/nakkiy/ctxhist.git ~/.ctxhist
 `.bashrc` に追記
 
 ```bash
-export CTXHIST_LOG_FILE="$HOME/.config/ctxhist.log"
-export CTXHIST_MAX_LINES=10000
-export HISTX_EXCLUDE_CMDS="cd clear ls"
-export CTXHIST_BINDKEY_STAY='\C-g\C-a'
-export CTXHIST_BINDKEY_RESTORE='\C-g\C-r'
-export CTXHIST_BINDKEY_SUBDIR_STAY='\C-o\C-a'
-export CTXHIST_BINDKEY_SUBDIR_RESTORE='\C-o\C-r'
++ export CTXHIST_LOG_FILE="$HOME/.config/ctxhist.log"
++ export CTXHIST_MAX_LINES=10000
++ export CTXHIST_EXCLUDE_CMDS="cd clear ls"
++ export CTXHIST_BINDKEY_STAY='\C-g\C-a'
++ export CTXHIST_BINDKEY_RESTORE='\C-g\C-r'
++ export CTXHIST_BINDKEY_SUBDIR_STAY='\C-o\C-a'
++ export CTXHIST_BINDKEY_SUBDIR_RESTORE='\C-o\C-r'
 
-source ~/.ctxhist/ctxhist.bash
++ source ~/.ctxhist/ctxhist.bash
 ```
 
 ```bash
@@ -129,17 +129,53 @@ source ~/.ctxhist/ctxhist.bash
 source ~/.bashrc
 ```
 
+### **`zsh (Oh-My-Zsh)`** の場合
+#### 1. `fzf` をインストール
+
+```zsh
+sudo apt install fzf    # on ubuntu, debian
+brew install fzf        # on macOS
+```
+
+#### 2. スクリプト配置 & `.zshrc` に追加
+
+```bash
+git clone --depth 1 https://github.com/nakkiy/ctxhist.git ~/.oh-my-zsh/custom/plugins/ctxhist
+```
+
+`.zshrc` に追記
+
+```zsh
++ export CTXHIST_LOG_FILE="$HOME/.config/ctxhist.log"
++ export CTXHIST_MAX_LINES=10000
++ export CTXHIST_EXCLUDE_CMDS="cd clear ls"
++ export CTXHIST_BINDKEY_STAY='\C-g\C-a'
++ export CTXHIST_BINDKEY_RESTORE='\C-g\C-r'
++ export CTXHIST_BINDKEY_SUBDIR_STAY='\C-o\C-a'
++ export CTXHIST_BINDKEY_SUBDIR_RESTORE='\C-o\C-r'
+
+- plugins=(git)
++ plugins=(git ctxhist)
+```
+
+```zsh
+# 設定反映
+source ~/.zshrc
+```
+
 ---
 
 ## ⚙️ アンインストール手順
 
-### 1. `.ctxhist.log` 削除
+### **`bash`** の場合
+
+#### 1. `.ctxhist.log` 削除
 
 ```bash
-rm  ~/.ctxhist.log
+rm  ~/.config/ctxhist.log
 ```
 
-### 2. スクリプト削除 & `.bashrc` 編集
+#### 2. スクリプト削除 & `.bashrc` 編集
 
 ```bash
 rm -r ~/.ctxhist
@@ -148,15 +184,15 @@ rm -r ~/.ctxhist
 インストール時に`.bashrc` に追記した内容を削除
 
 ```bash
-export CTXHIST_LOG_FILE="$HOME/.config/ctxhist.log"
-export CTXHIST_MAX_LINES=10000
-export HISTX_EXCLUDE_CMDS="cd clear ls"
-export CTXHIST_BINDKEY_STAY='\C-g\C-a'
-export CTXHIST_BINDKEY_RESTORE='\C-g\C-r'
-export CTXHIST_BINDKEY_SUBDIR_STAY='\C-o\C-a'
-export CTXHIST_BINDKEY_SUBDIR_RESTORE='\C-o\C-r'
+- export CTXHIST_LOG_FILE="$HOME/.config/ctxhist.log"
+- export CTXHIST_MAX_LINES=10000
+- export CTXHIST_EXCLUDE_CMDS="cd clear ls"
+- export CTXHIST_BINDKEY_STAY='\C-g\C-a'
+- export CTXHIST_BINDKEY_RESTORE='\C-g\C-r'
+- export CTXHIST_BINDKEY_SUBDIR_STAY='\C-o\C-a'
+- export CTXHIST_BINDKEY_SUBDIR_RESTORE='\C-o\C-r'
 
-source ~/.ctxhist/ctxhist.bash
+- source ~/.ctxhist/ctxhist.bash
 ```
 
 ```bash
@@ -164,10 +200,52 @@ source ~/.ctxhist/ctxhist.bash
 source ~/.bashrc
 ```
 
-### 3. `fzf` アンインストール(任意)
+#### 3. `fzf` アンインストール(任意)
 
 ```bash
-sudo apt remove fzf
+sudo apt remove fzf     # on ubuntu, debian
+brew uninstall fzf      # on macOS
+```
+
+### **`zsh`** の場合
+
+#### 1. `.ctxhist.log` 削除
+
+```zsh
+rm  ~/.config/ctxhist.log
+```
+
+#### 2. スクリプト削除 & `.zshrc` 編集
+
+```zsh
+rm -r ~/.oh-my-zsh/custom/plugins/ctxhist
+```
+
+インストール時に`.zshrc` に追記した内容を削除
+
+```zsh
+- export CTXHIST_LOG_FILE="$HOME/.config/ctxhist.log"
+- export CTXHIST_MAX_LINES=10000
+- export CTXHIST_EXCLUDE_CMDS="cd clear ls"
+- export CTXHIST_BINDKEY_STAY='\C-g\C-a'
+- export CTXHIST_BINDKEY_RESTORE='\C-g\C-r'
+- export CTXHIST_BINDKEY_SUBDIR_STAY='\C-o\C-a'
+- export CTXHIST_BINDKEY_SUBDIR_RESTORE='\C-o\C-r'
+
+- plugins=(git ctxhist)
++ plugins=(git)
+```
+
+```bash
+# 設定反映
+source ~/.zshrc
+```
+
+#### 3. `fzf` アンインストール(任意)
+
+```bash
+sudo apt remove fzf     # on ubuntu, debian
+brew uninstall fzf      # on macOS
 ```
 
 ---
@@ -176,7 +254,7 @@ sudo apt remove fzf
 
 | 変数名                    | 説明                           | デフォルト値              |
 |---------------------------|--------------------------------|----------------------------|
-| `CTXHIST_LOG_FILE`          | 履歴ログファイルの保存先        | `~/.ctxhist.log`            |
+| `CTXHIST_LOG_FILE`          | 履歴ログファイルの保存先        | `~/.config/ctxhist.log`  |
 | `CTXHIST_MAX_LINES`         | ログの最大行数                 | `10000`                   |
 | `CTXHIST_EXCLUDE_CMDS`      | 除外コマンド（空白区切り）      | 例: `"ls cd"`             |
 | `CTXHIST_BINDKEY_*`         | キーバインド設定               | `\C-g\C-a` など           |
@@ -197,7 +275,8 @@ sudo apt remove fzf
 
 ## 🧩 今後の展望
 
-- zsh plugin化してOh-My-Zshに対応するかも
+- zsh plugin化してOh-My-Zshに対応しました！
+- もし要望あったらfishへの対応も考えます。
 
 ---
 

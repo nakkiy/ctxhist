@@ -3,13 +3,13 @@
 [🇯🇵 日本語版README](docs/README_ja.md)  
 
 > **Re-run past commands in their original context**  
-> A context-aware history extension for Bash
+> A context-aware history extension for Bash & Zsh
 
 ---
 
 ## 🧠 What is this?
 
-`ctxhist` is more than just a shell history. It records:  
+`ctxhist` is more than just shell history. It records:  
 **"When, where, and what you ran"**,  
 and allows you to re-run past commands **in the exact directory they were originally executed**.
 
@@ -58,9 +58,9 @@ In this example:
 ## ⌨️ Default Keybindings
 
 | Mode       | All History (global)      | Subdirectory only         |
-|------------|----------------------------|----------------------------|
-| **stay**   | `Ctrl-g Ctrl-a`            | `Ctrl-o Ctrl-a`            |
-| **restore**| `Ctrl-g Ctrl-r`            | `Ctrl-o Ctrl-r`            |
+|------------|---------------------------|----------------------------|
+| **stay**   | `Ctrl-g Ctrl-a`           | `Ctrl-o Ctrl-a`            |
+| **restore**| `Ctrl-g Ctrl-r`           | `Ctrl-o Ctrl-r`            |
 
 > Example: `Ctrl-g Ctrl-r` → Select via fzf → Temporarily cd & run → Return to original dir
 
@@ -88,22 +88,24 @@ YYYY-MM-DD HH:MM:SS | /path/to/dir | command here
 ---
 
 ## 🐚 Shell Support
-Currently, `ctxhist` is designed for **Bash only**.  
-`Zsh` is **not yet supported**, but we plan to add compatibility in the future.
+Currently supports **Bash** and **Zsh (Oh My Zsh)**.  
 
-If you're using Zsh, the keybindings and sourcing script may not work as expected.
+Other shells like Fish are not yet supported, but may be considered in the future.
 
 ---
 
 ## ⚙️ Installation
 
-### 1. Install `fzf`
+### For **Bash**
+
+#### 1. Install `fzf`
 
 ```bash
-sudo apt install fzf  # or brew install fzf on macOS
+sudo apt install fzf    # on Ubuntu/Debian
+brew install fzf        # on macOS
 ```
 
-### 2. Clone and configure
+#### 2. Clone and configure
 
 ```bash
 git clone --depth 1 https://github.com/nakkiy/ctxhist.git ~/.ctxhist
@@ -112,18 +114,18 @@ git clone --depth 1 https://github.com/nakkiy/ctxhist.git ~/.ctxhist
 Add the following to your `.bashrc`:
 
 ```bash
-export CTXHIST_LOG_FILE="$HOME/.config/ctxhist.log"
-export CTXHIST_MAX_LINES=10000
-export HISTX_EXCLUDE_CMDS="cd clear ls"
-export CTXHIST_BINDKEY_STAY='\C-g\C-a'
-export CTXHIST_BINDKEY_RESTORE='\C-g\C-r'
-export CTXHIST_BINDKEY_SUBDIR_STAY='\C-o\C-a'
-export CTXHIST_BINDKEY_SUBDIR_RESTORE='\C-o\C-r'
++ export CTXHIST_LOG_FILE="$HOME/.config/ctxhist.log"
++ export CTXHIST_MAX_LINES=10000
++ export CTXHIST_EXCLUDE_CMDS="cd clear ls"
++ export CTXHIST_BINDKEY_STAY='\C-g\C-a'
++ export CTXHIST_BINDKEY_RESTORE='\C-g\C-r'
++ export CTXHIST_BINDKEY_SUBDIR_STAY='\C-o\C-a'
++ export CTXHIST_BINDKEY_SUBDIR_RESTORE='\C-o\C-r'
 
-source ~/.ctxhist/ctxhist.bash
++ source ~/.ctxhist/ctxhist.bash
 ```
 
-Apply the changes:
+Then apply changes:
 
 ```bash
 source ~/.bashrc
@@ -131,44 +133,108 @@ source ~/.bashrc
 
 ---
 
-## ❌ Uninstall
+### For **Zsh (Oh My Zsh)**
 
-### 1. Remove the log file
+#### 1. Install `fzf`
 
-```bash
-rm ~/.ctxhist.log
+```zsh
+sudo apt install fzf    # on Ubuntu/Debian
+brew install fzf        # on macOS
 ```
 
-### 2. Remove the script and edit `.bashrc`
+#### 2. Clone the plugin
 
 ```bash
+git clone --depth 1 https://github.com/nakkiy/ctxhist.git ~/.oh-my-zsh/custom/plugins/ctxhist
+```
+
+Add the following to your `.zshrc`:
+
+```zsh
++ export CTXHIST_LOG_FILE="$HOME/.config/ctxhist.log"
++ export CTXHIST_MAX_LINES=10000
++ export CTXHIST_EXCLUDE_CMDS="cd clear ls"
++ export CTXHIST_BINDKEY_STAY='\C-g\C-a'
++ export CTXHIST_BINDKEY_RESTORE='\C-g\C-r'
++ export CTXHIST_BINDKEY_SUBDIR_STAY='\C-o\C-a'
++ export CTXHIST_BINDKEY_SUBDIR_RESTORE='\C-o\C-r'
+
+# Enable the plugin
+- plugins=(git)
++ plugins=(git ctxhist)
+```
+
+Apply changes:
+
+```zsh
+source ~/.zshrc
+```
+
+---
+
+## ❌ Uninstall
+
+### Bash
+
+```bash
+rm ~/.config/ctxhist.log
 rm -r ~/.ctxhist
 ```
 
-Then remove the following lines from `.bashrc`:
+Then remove the corresponding lines from `.bashrc` and run:
 
 ```bash
-export CTXHIST_LOG_FILE="$HOME/.config/ctxhist.log"
-export CTXHIST_MAX_LINES=10000
-export HISTX_EXCLUDE_CMDS="cd clear ls"
-export CTXHIST_BINDKEY_STAY='\C-g\C-a'
-export CTXHIST_BINDKEY_RESTORE='\C-g\C-r'
-export CTXHIST_BINDKEY_SUBDIR_STAY='\C-o\C-a'
-export CTXHIST_BINDKEY_SUBDIR_RESTORE='\C-o\C-r'
+- export CTXHIST_LOG_FILE="$HOME/.config/ctxhist.log"
+- export CTXHIST_MAX_LINES=10000
+- export CTXHIST_EXCLUDE_CMDS="cd clear ls"
+- export CTXHIST_BINDKEY_STAY='\C-g\C-a'
+- export CTXHIST_BINDKEY_RESTORE='\C-g\C-r'
+- export CTXHIST_BINDKEY_SUBDIR_STAY='\C-o\C-a'
+- export CTXHIST_BINDKEY_SUBDIR_RESTORE='\C-o\C-r'
 
-source ~/.ctxhist/ctxhist.bash
+- source ~/.ctxhist/ctxhist.bash
 ```
-
-Apply the changes:
 
 ```bash
 source ~/.bashrc
 ```
 
-### 3. Optional: Remove `fzf`
+---
+
+### Zsh (Oh My Zsh)
+
+```zsh
+rm ~/.config/ctxhist.log
+rm -r ~/.oh-my-zsh/custom/plugins/ctxhist
+```
+
+Then remove the corresponding lines from `.zshrc` and run:
+
+```zsh
+- export CTXHIST_LOG_FILE="$HOME/.config/ctxhist.log"
+- export CTXHIST_MAX_LINES=10000
+- export CTXHIST_EXCLUDE_CMDS="cd clear ls"
+- export CTXHIST_BINDKEY_STAY='\C-g\C-a'
+- export CTXHIST_BINDKEY_RESTORE='\C-g\C-r'
+- export CTXHIST_BINDKEY_SUBDIR_STAY='\C-o\C-a'
+- export CTXHIST_BINDKEY_SUBDIR_RESTORE='\C-o\C-r'
+
+# Enable the plugin
+- plugins=(git ctxhist)
++ plugins=(git)
+```
+
+```zsh
+source ~/.zshrc
+```
+
+---
+
+### Optional: Remove `fzf`
 
 ```bash
-sudo apt remove fzf
+sudo apt remove fzf     # on Ubuntu/Debian
+brew uninstall fzf      # on macOS
 ```
 
 ---
@@ -177,10 +243,10 @@ sudo apt remove fzf
 
 | Variable Name               | Description                              | Default Value            |
 |----------------------------|------------------------------------------|--------------------------|
-| `CTXHIST_LOG_FILE`         | Path to the log file                     | `~/.ctxhist.log`         |
+| `CTXHIST_LOG_FILE`         | Path to the log file                     | `~/.config/ctxhist.log`  |
 | `CTXHIST_MAX_LINES`        | Max number of lines to keep in log      | `10000`                  |
-| `CTXHIST_EXCLUDE_CMDS`     | Commands to exclude (space-separated)    | e.g., `"cd clear ls"`          |
-| `CTXHIST_BINDKEY_*`        | Keybindings for each mode               | `\C-g\C-a` etc.         |
+| `CTXHIST_EXCLUDE_CMDS`     | Commands to exclude (space-separated)    | e.g., `"cd clear ls"`    |
+| `CTXHIST_BINDKEY_*`        | Keybindings for each mode                | `\C-g\C-a`, etc.         |
 
 ---
 
@@ -198,11 +264,11 @@ English or Japanese — either is welcome!
 
 ## 🧩 Future Plans
 
-- Possibly release as a Zsh plugin (Oh-My-Zsh compatible)
+- Zsh plugin support (✅ now supported via Oh My Zsh)
+- Possibly support Fish shell if requested
 
 ---
 
 ## 📄 License
 
 [MIT License](LICENSE-MIT)
-
