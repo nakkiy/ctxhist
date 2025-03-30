@@ -76,7 +76,11 @@ _ctxhist_select() {
 
   # fzfで選択
   local selected
-  selected=$(echo "$entries" | tac | fzf)
+  if command -v tac >/dev/null; then
+    selected=$(echo "$entries" | tac | fzf)
+  elif command -v tail >/dev/null; then
+    selected=$(echo "$entries" | tail -r | fzf)
+  fi
   [[ -z "$selected" ]] && return 1
 
   # ディレクトリ・コマンドを抽出してグローバル変数に格納

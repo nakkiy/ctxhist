@@ -58,7 +58,11 @@ function _ctxhist_select {
   fi
 
   local selected
-  selected=$(echo "$entries" | tac | fzf)
+  if command -v tac >/dev/null; then
+    selected=$(echo "$entries" | tac | fzf)
+  elif command -v tail >/dev/null; then
+    selected=$(echo "$entries" | tail -r | fzf)
+  fi
   [[ -z "$selected" ]] && return 1
 
   CTXHIST_SELECTED_DIR=$(echo "$selected" | cut -d'|' -f2 | xargs)
